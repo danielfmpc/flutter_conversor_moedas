@@ -17,8 +17,30 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final realEditController = TextEditingController();
+  final dolarEditController = TextEditingController();
+  final euroEditController = TextEditingController();
+
   double dolar;
   double euro;
+
+  void _realChange(String text){
+    double real = double.parse(text);
+    print(euro);
+    print(dolar);
+    dolarEditController.text = (real/dolar).toStringAsFixed(2);
+    euroEditController.text = (real/euro).toStringAsFixed(2);
+  }
+  void _dolarChange(String text){
+    double dolar = double.parse(text);
+    realEditController.text = (dolar * this.dolar / dolar).toStringAsFixed(2);
+    euroEditController.text = (dolar * this.dolar / euro).toStringAsFixed(2);
+  }
+  void _euroChange(String text){
+    double euro = double.parse(text);
+    realEditController.text = (euro * this.euro).toStringAsFixed(2);
+    euroEditController.text = (euro * this.euro / dolar).toStringAsFixed(2);
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -59,11 +81,11 @@ class _HomeState extends State<Home> {
                       size: 150,
                       color: Colors.amber,
                     ),
-                    bulderTextFiel("Real", "R\$ "),
+                    bulderTextFiel("Real", "R\$", realEditController, _realChange),
                     Divider(),
-                    bulderTextFiel("Dólar", "US\$ "),
+                    bulderTextFiel("Dólar", "US\$", dolarEditController, _dolarChange),
                     Divider(),
-                    bulderTextFiel("Euro", "UE "),                    
+                    bulderTextFiel("Euro", "UE ", euroEditController, _euroChange),
                   ],
                 ),
               );
@@ -88,8 +110,11 @@ class _HomeState extends State<Home> {
   }
 }
 
-Widget bulderTextFiel(String label, String prefix){
+Widget bulderTextFiel(String label, String prefix, TextEditingController textEditingController,
+Function func
+){
   return TextField(
+    controller: textEditingController,
     keyboardType: TextInputType.number,
     decoration: InputDecoration(
       labelText: label,
@@ -99,5 +124,9 @@ Widget bulderTextFiel(String label, String prefix){
       border: OutlineInputBorder(),
       prefixText: prefix,
     ),
+    style: TextStyle(
+      color: Colors.amber
+    ),
+    onChanged: func,
   );
 }
